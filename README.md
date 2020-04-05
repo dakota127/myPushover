@@ -1,12 +1,10 @@
-# Pushover
+# myPushover
 Pushover Library for ESP32.
 
 This Lib is based on this lib:
  https://github.com/ArduinoHannover/Pushover
  
- While the referenced lib works just fine, I needed much better errorhandling, not just false or true and debugging
- The return value is therefore int instead of boolean.
- There is also an additional Setter to set a debug flag.
+ While the referenced lib works just fine, I needed better errorhandling, not just false or true and debugging. The return value is therefore int instead of boolean. There is also an additional Setter to set a debug flag.
  
  Library returns:
  0:         ok message sent, return was HTTP/1.1 200
