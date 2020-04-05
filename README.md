@@ -18,9 +18,9 @@ This Lib is based on this lib:
 ## Usage
 The library offers almost all functions.
 
-Initialize a new Pushover: `Pushover pushover = Pushover("myAppToken","myUserToken");`
+Initialize a new Pushover: `myPushover pushover = myPushover("myAppToken","myUserToken");`
 
-Then you can call the setters and if you're done, just call `pushover.send()` which will return true on success.
+Then you can call the setters and if you're done, just call `mypushover.send()` which will return (int) zero on success.
 
 ### Setters
 ```
