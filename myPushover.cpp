@@ -60,6 +60,7 @@ void myPushover::setDebug(boolean debug) {
 	_debug = debug;
 }
 
+//------------------------------------------------
 int myPushover::send(String &response) {
 	WiFiClientSecure client;
 	if (!client.connect("api.pushover.net", 443)) {
@@ -79,19 +80,45 @@ int myPushover::send(String &response) {
 		client.stop();	
 		return (4);                         // timeout 
 	}
-	String line;
+	String line1;
+	String line2;
+
+
+	line1 = client.readStringUntil('\n');
 	while (client.available() != 0) {
 		if (client.read() == '{') break;
 	}
-	line = client.readStringUntil('\n');
+	line2 = client.readStringUntil('\n');
+	
+    if (_debug) {	
+        Serial.print ("line1 : "); Serial.println (line1);
+        Serial.print ("line2 : "); Serial.println (line2);
+    }
+    client.stop();
+    
+    // line 1 contains HTTP/1.1 400  or HTTP/1.1 200
+	int len = line1.length();
+	if (len > 20) response = "l1=" + line1.substring(0, 20) + "*" + "\r";	
+	else response = "l1=" + line1 + "\r";
+	
+	// line2 contais description of error
+    len = line2.length();
+	if (len > 25) response = response  + "l2=" + line2.substring(0, 25) + "\r\n";
+	else response = response + "l2=" + line2 + "\r\n";
+	
 	if (_debug) {
 	    Serial.print ("pushover response: ");
-	    Serial.println (line);
+	    Serial.println (response);
+	  
 	}
-	int len = line.length();
-	response = line.substring(0, len-1);
-	if (line.indexOf("HTTP/1.1 200") == 0) return (0);      // ok return
 	
-   	if (line.indexOf("HTTP/1.1 400") == 0) return (2);      // bad request
-	else return (5) ;                                        // any other orror
+	// check respone and return accordingly
+	if ( (line1.indexOf("HTTP/1.1 200") == 0) || (line1.indexOf("\"status\":1") == 0)) return (0);      // ok return
+	if ( (line2.indexOf("HTTP/1.1 200") == 0) || (line2.indexOf("\"status\":1") == 0)) return (0);      // ok return	
+	
+   	if (line1.indexOf("HTTP/1.1 400") == 0) return (2);      // bad request, give back response
+	else return (5) ;                                        // any other error
+
+
 }
+
