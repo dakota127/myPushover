@@ -49,5 +49,5 @@ class myPushover {
 		void setHTML(boolean);
 		void setTimeout(uint16_t);
 		void setDebug(boolean);
-		int send(void);
+		int send(String &);
 };

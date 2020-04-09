@@ -60,7 +60,7 @@ void myPushover::setDebug(boolean debug) {
 	_debug = debug;
 }
 
-int myPushover::send(void) {
+int myPushover::send(String &response) {
 	WiFiClientSecure client;
 	if (!client.connect("api.pushover.net", 443)) {
 	    returncode = 3 ;
@@ -88,7 +88,8 @@ int myPushover::send(void) {
 	    Serial.print ("pushover response: ");
 	    Serial.println (line);
 	}
-	
+	int len = line.length();
+	response = line.substring(0, len-1);
 	if (line.indexOf("HTTP/1.1 200") == 0) return (0);      // ok return
 	
    	if (line.indexOf("HTTP/1.1 400") == 0) return (2);      // bad request
